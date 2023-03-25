@@ -47,7 +47,14 @@ CUMM_CUDA_VERSION = os.getenv("CUMM_CUDA_VERSION", None)
 CUMM_CPU_ONLY_BUILD = False
 if CUMM_CUDA_VERSION is not None:
     CUMM_CPU_ONLY_BUILD = CUMM_CUDA_VERSION.strip() == ""
-
-CUMM_DISABLE_JIT = os.getenv("CUMM_DISABLE_JIT", "0") == "1"
+try:
+    from .__build_settings__ import __cpu_only__, __disable_jit__
+    CUMM_CPU_ONLY_BUILD = __cpu_only__
+    CUMM_DISABLE_JIT = __disable_jit__
+except ImportError:
+    CPU_ONLY = os.getenv("CPU_ONLY", None)
+    if CPU_ONLY is not None:
+        CUMM_CPU_ONLY_BUILD = CPU_ONLY.strip() != "0"
+    CUMM_DISABLE_JIT = os.getenv("CUMM_DISABLE_JIT", "0") == "1"
 
 CUMM_MAXIMUM_NVRTC_CONV_NDIM = 3

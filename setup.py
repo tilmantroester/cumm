@@ -93,6 +93,22 @@ about['__version__'] = version
 with open(version_path, 'w') as f:
     f.write("__version__ = '{}'\n".format(version))
 
+# Explicit flag to force CPU-only build
+cpu_only = os.getenv("CPU_ONLY", None)
+if cpu_only is not None:
+    cpu_only = cpu_only.strip() != "0"
+else:
+    cpu_only = False
+disable_jit = os.getenv("CUMM_DISABLE_JIT", None)
+if disable_jit is not None and disable_jit == "1":
+    disable_jit = True
+else:
+    disable_jit = False
+
+build_settings_path = os.path.join(cwd, NAME, '__build_settings__.py')
+with open(build_settings_path, 'w') as f:
+    f.write("__cpu_only__ = {}\n".format(cpu_only))
+    f.write("__disable_jit__ = {}\n".format(disable_jit))
 
 class UploadCommand(Command):
     """Support setup.py upload."""

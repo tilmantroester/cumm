@@ -741,7 +741,7 @@ class TensorViewBind(pccm.Class, pccm.pybind.PybindClassMixin):
 #endif
   }); 
         """)
-        if compat.InLinux:
+        if compat.InLinux or compat.InMacOS:
             code.raw("""
             m.def("cufilt", [](std::string name){
               int status;
